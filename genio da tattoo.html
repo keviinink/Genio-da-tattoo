@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Genio Da Tattoo</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 10px;
+            background-color: black; /* Black background */
+            color: #ffffff;
+        }
+
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.5);
+            width: 80%;
+            max-width: 300px;
+        }
+
+        button {
+            background-color: orange; /* Orange button */
+        }
+
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: cyan; /* Cyan result highlight */
+            border-radius: 10px;
+            box-shadow: 0 0 20px 0 rgba(255, 255, 255, 0.8);
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #historico {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 5px;
+            overflow-y: auto;
+            max-height: 200px;
+            display: none; /* Initially hidden */
+        }
+        
+        #historico div {
+            border-bottom: 1px solid #ffffff;
+            padding: 5px;
+        }
+
+        h1 {
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        @media screen and (min-width: 320px) and (max-width: 480px) {
+            input, button {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Genio Da Tattoo</h1>
+    <input type="text" id="nomeInput" placeholder="Digite seu nome">
+    <button onclick="gerarPremio()">Qual o meu prêmio?</button>
+    <div id="resultado"></div>
+    <button onclick="toggleHistorico()">Ver Histórico</button>
+    <div id="historico">
+        <h2>Histórico de Prêmios</h2>
+        <div id="historicoContent"></div>
+    </div>
+    <script>
+        const premios = [
+            "Tattoo Grátis", // extremamente raro
+            "Chaveiro", "Chaveiro", // raro
+            "Desconto 30%", "Desconto 30%", "Desconto 30%",
+            "Desconto 20%", "Desconto 20%", "Desconto 20%", "Desconto 20%", "Desconto 20%",
+            "Desconto 10%", "Desconto 10%", "Desconto 10%", "Desconto 10%", "Desconto 10%", "Desconto 10%", "Desconto 10%",
+            "Nada, infelizmente", "Nada, infelizmente", "Nada, infelizmente", "Nada, infelizmente", "Nada, infelizmente", "Nada, infelizmente", "Nada, infelizmente"
+        ];
+
+        function gerarPremio() {
+            const nome = document.getElementById('nomeInput').value.trim();
+            if (!nome) {
+                alert("Por favor, digite um nome.");
+                return;
+            }
+
+            const premio = premios[Math.floor(Math.random() * premios.length)];
+            document.getElementById('resultado').innerHTML = `${nome}, seu prêmio é: ${premio}`;
+
+            salvarHistorico(nome, premio);
+            mostrarHistorico();
+        }
+
+        function salvarHistorico(nome, premio) {
+            const historicoAtual = JSON.parse(localStorage.getItem('historicoPremios')) || [];
+            historicoAtual.push({ nome, premio });
+            localStorage.setItem('historicoPremios', JSON.stringify(historicoAtual));
+        }
+
+        function mostrarHistorico() {
+            const historico = JSON.parse(localStorage.getItem('historicoPremios')) || [];
+            const historicoElement = document.getElementById('historicoContent');
+            historicoElement.innerHTML = '';
+            historico.forEach(h => {
+                historicoElement.innerHTML += `<div>${h.nome}: ${h.premio}</div>`;
+            });
+        }
+
+        function toggleHistorico() {
+            const historicoDiv = document.getElementById('historico');
+            historicoDiv.style.display = historicoDiv.style.display === 'none' ? 'block' : 'none';
+            if (historicoDiv.style.display === 'block') {
+                mostrarHistorico();
+            }
+        }
+
+        window.onload = () => {
+            mostrarHistorico();
+        }
+    </script>
+</body>
+</html>
